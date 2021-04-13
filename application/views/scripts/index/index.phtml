@@ -1,0 +1,59 @@
+<?php
+$this->title = "My Albums";
+$this->headTitle($this->title);
+?>
+<p><button id="submitbutton" data-toggle="modal" data-target="#formview"> Add New Album </button></p>
+<table id="co" class="table" style="width:100%">
+        <thead class="thead-dark">
+
+                <th>ID</th>
+                <th>Artist_Name</th>
+                <th>Category</th>
+                <th>image</th>
+                <th>Action</th>
+        </thead>
+</table>
+<div class="modal" id="formview">
+        <div id="contentmodel">
+                <form class="animate" id="addeditForm" method="POST" action="/index/submit" enctype="multipart/form-data">
+                        <div class="container">
+                                <h1>Album</h1>
+                                </br>
+                                <div class="form-group">
+                                        <input type="hidden" id="id" name="id">
+
+                                        <div class="form-group">
+                                                <label for="Photo"><b>Your Photo</b></label>
+                                                <input type="file" name="uploadfile" id="file" value="" />
+                                        </div>
+                                        <label for="Name"><b>Artist</b></label>
+                                        <select name="Artist" class="form-control artist" onselect="this.value;" required>
+                                                <option value="" disabled selected>Choose option</option>
+                                                <?php
+                                                foreach ($this->artist as $artist) {
+
+                                                ?>
+                                                        <option value="<?php echo $artist->ID; ?>"><?php echo $this->escape($artist->Artist_Name); ?></option>
+                                                <?php } ?>
+                                        </select>
+                                </div>
+                                <div class="form-group">
+                                        <label for="Category"><b>Category</b></label>
+                                        <select name="Category[]" class="form-control category" onselect="this.value;" multiple required>
+                                                <option value="" disabled selected>Choose option</option>
+                                                <?php
+                                                foreach ($this->category as $category) {
+
+                                                ?>
+                                                        <option value="<?php echo $category->ID; ?>"><?php echo $this->escape($category->Category_Name); ?></option>
+                                                <?php } ?>
+                                        </select>
+                                </div>
+                                <input type="submit" name="Add" class="btn btn-primary" id="Add" value="Add">
+                                <input type="submit" name="Edit" class="btn btn-primary" id="Edit" value="Edit">
+                                <input type="button" name="Cancel" onclick="javascript:window.location.reload()" class="btn btn-primary" id="Cancel" value="Cancel">
+                        </div>
+                </form>
+        </div>
+</div>
+<?php echo $this->headScript()->appendFile($this->baseUrl() . '/JS/index.js'); ?>

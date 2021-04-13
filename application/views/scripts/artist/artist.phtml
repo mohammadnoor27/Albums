@@ -1,0 +1,32 @@
+<?php
+$this->title = "Artist";
+$this->headTitle($this->title);
+?>
+<p><button id="submitbutton" data-toggle="modal" data-target="#formview"> Add New Artist </button></p>
+<table id="co" class="table" style="width:100%">
+        <thead class="thead-dark">
+
+                <th>ID</th>
+                <th>Artist_Name</th>
+                <th>Action</th>
+        </thead>
+</table>
+<div class="modal" id="formview">
+        <div id="contentmodel">
+                <form class="animate" id="addeditForm" method="POST" action="/artist/submit" enctype="multipart/form-data">
+                        <div class="container">
+                                <h1>Artist</h1>
+                                </br>
+                                <div class="form-group">
+                                        <input type="hidden" id="id" name="id">
+                                        <label for="Artist"><b>Artist_Name</b></label>
+                                        <input type="text" class="form-control" placeholder="Enter Artist" name="Artist" id="artist">
+                                </div>
+                                <input type="submit" name="Add" class="btn btn-primary" id="Add" value="Add">
+                                <input type="submit" name="Edit" class="btn btn-primary" id="Edit" value="Edit">
+                                <input type="button" name="Cancel" onclick="javascript:window.location.reload()" class="btn btn-primary" id="Cancel" value="Cancel">
+                        </div>
+                </form>
+        </div>
+</div>
+<?php echo $this->headScript()->appendFile($this->baseUrl() . '/JS/artist.js'); ?>
