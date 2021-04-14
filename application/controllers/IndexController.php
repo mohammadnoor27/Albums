@@ -40,10 +40,21 @@ class IndexController extends Zend_Controller_Action
         } elseif (isset($_REQUEST['Edit'])) {
             $id = $_REQUEST['id'];
             $artist = $_REQUEST['Artist'];
-            $title = $_REQUEST['Title'];
-            if ($artist != "" && $title != "") {
+            $Category = $_REQUEST['Category'];
+            $filename = isset($_FILES['uploadfile']['name']) ? $_FILES["uploadfile"]["name"] : null;
+            $tempname = isset($_FILES['uploadfile']['tmp_name']) ? $_FILES["uploadfile"]["tmp_name"] : null;
+            $folder = "/var/www/zf-tutorial/public/image/" . $filename;
+            if ($artist != "") {
                 $albums = new Application_Model_DbTable_Albums();
-                $albums->updateAlbum($id, $artist, $title);
+                $CategoryAlbum = new Application_Model_DbTable_AlbumCategory();
+                if (move_uploaded_file($tempname, $folder)) {
+                $albums->updateAlbum($id, $artist, $filename);
+                $CategoryAlbum->deleteAlbum($id);
+                foreach ($Category as $icon) {
+                    $Category = $icon;
+                    $CategoryAlbum->addAlbumCategory($id, $Category);
+                }
+            }
                 $this->_helper->redirector('index');
             }
         }

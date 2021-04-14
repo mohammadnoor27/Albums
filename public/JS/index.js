@@ -33,14 +33,10 @@ $(document).ready(function () {
     }
   }
 
-  // $('#co tbody').on('click', '#editbutton', function () {
-  //   var jsData = table.row($(this).parents('tr')).data();
-  //   console.log(jsData);
-  //   $('.artist').val(jsData["Artist_Name"]);
-  //   $('.category').val(jsData["Category_Name"]);
-  //   $('#file').val(jsData["image"]);
-  //   $('#id').val(jsData["id"]);
-  // });
+  $('#co tbody').on('click', '#editbutton', function () {
+    var jsData = table.row($(this).parents('tr')).data();
+    $('#id').val(jsData["id"]);
+  });
   $("body").on("click", "#Deletebutton", function () {
     var x = confirm("Are you sure you want to delete?");
     if (x)

@@ -34,6 +34,6 @@ class Application_Model_DbTable_AlbumCategory extends Zend_Db_Table_Abstract
     }
     public function deleteAlbum($ID)
     {
-        $this->delete('ID =' . (int)$ID);
+        $this->delete('IDAlbum =' . (int)$ID);
     }
 }

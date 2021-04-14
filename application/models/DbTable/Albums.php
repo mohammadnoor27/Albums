@@ -31,7 +31,8 @@ class Application_Model_DbTable_Albums extends Zend_Db_Table_Abstract
             'artist' => $artist,
             'image'  => $image
         );
-        $this->update($data, 'id = ' . (int)$id);
+        $ID = $this->update($data, 'id = ' . (int)$id);
+        return $ID;
     }
     public function deleteAlbum($id)
     {
