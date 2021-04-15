@@ -20,7 +20,7 @@ $(document).ready(function () {
       {
         data: "id",
         render: function (data, type, row) {
-          return '<button id="editbutton" data-id="' + data + '" data-toggle="modal" data-target="#formview">Edit</button> <a href="/index/delete?id=' + data + '&del=delete"><button id="Deletebutton">Delete</button></a>';
+          return '<button name="editbutton" id="editbutton" data-id="' + data + '" data-toggle="modal" data-target="#formview">Edit</button> <a href="/index/delete?id=' + data + '&del=delete"><button id="Deletebutton">Delete</button></a>';
         }
       }
     ]
@@ -34,8 +34,12 @@ $(document).ready(function () {
   }
 
   $('#co tbody').on('click', '#editbutton', function () {
-    var jsData = table.row($(this).parents('tr')).data();
-    $('#id').val(jsData["id"]);
+    var per_id = $(this).data('id');
+    $.ajax({
+      url: '/index/index',
+      type: 'POST',
+      data: 'id=' + per_id
+    });
   });
   $("body").on("click", "#Deletebutton", function () {
     var x = confirm("Are you sure you want to delete?");

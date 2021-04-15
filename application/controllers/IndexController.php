@@ -13,6 +13,11 @@ class IndexController extends Zend_Controller_Action
         $this->view->albums = $albums->fetchAll();
         $artist = new Application_Model_DbTable_Artist();
         $this->view->artist = $artist->fetchAll();
+        if(isset($_REQUEST['id'])){
+        $albumview = new Application_Model_DbTable_AlbumView();
+        $this->view->albumview= $albumview->fetchRow("id=".$_REQUEST['id']);
+        // die(var_dump(($this->view->albumview)));
+        }
         $category = new Application_Model_DbTable_Category();
         $this->view->category = $category->fetchAll();
     }

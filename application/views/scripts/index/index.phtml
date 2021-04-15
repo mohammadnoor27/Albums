@@ -28,8 +28,10 @@ $this->headTitle($this->title);
                                         </div>
                                         <label for="Name"><b>Artist</b></label>
                                         <select name="Artist" class="form-control artist" onselect="this.value;" required>
-                                                <option value="" disabled selected>Choose option</option>
+                                       
+                                                <option value="" disabled selected><?php echo $this->albumview->Artist_Name; ?></option>
                                                 <?php
+                                       
                                                 foreach ($this->artist as $artist) {
 
                                                 ?>
