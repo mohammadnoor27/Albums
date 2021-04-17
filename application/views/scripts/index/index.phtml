@@ -24,14 +24,12 @@ $this->headTitle($this->title);
 
                                         <div class="form-group">
                                                 <label for="Photo"><b>Your Photo</b></label>
-                                                <input type="file" name="uploadfile" id="file" value="" />
+                                                <input type="file" name="uploadfile" id="img" value="nn" />
                                         </div>
                                         <label for="Name"><b>Artist</b></label>
                                         <select name="Artist" class="form-control artist" onselect="this.value;" required>
-                                       
-                                                <option value="" disabled selected><?php echo $this->albumview->Artist_Name; ?></option>
+                                                <option value="" disabled selected>Choose option</option>
                                                 <?php
-                                       
                                                 foreach ($this->artist as $artist) {
 
                                                 ?>

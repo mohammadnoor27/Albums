@@ -35,10 +35,18 @@ $(document).ready(function () {
 
   $('#co tbody').on('click', '#editbutton', function () {
     var per_id = $(this).data('id');
+
     $.ajax({
-      url: '/index/index',
-      type: 'POST',
-      data: 'id=' + per_id
+      url: '/index/editalbum',
+      type: 'GET',
+      data: 'id=' + per_id,
+      success: function(values)
+            {
+              console.log(values);
+                $('.artist').val(values[0].artist);
+                $('.category').val(values[0].IDCategory);
+              //  $('#img').val(values[0].image);
+            } 
     });
   });
   $("body").on("click", "#Deletebutton", function () {

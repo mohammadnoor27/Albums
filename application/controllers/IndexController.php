@@ -13,11 +13,6 @@ class IndexController extends Zend_Controller_Action
         $this->view->albums = $albums->fetchAll();
         $artist = new Application_Model_DbTable_Artist();
         $this->view->artist = $artist->fetchAll();
-        if(isset($_REQUEST['id'])){
-        $albumview = new Application_Model_DbTable_AlbumView();
-        $this->view->albumview= $albumview->fetchRow("id=".$_REQUEST['id']);
-        // die(var_dump(($this->view->albumview)));
-        }
         $category = new Application_Model_DbTable_Category();
         $this->view->category = $category->fetchAll();
     }
@@ -53,13 +48,13 @@ class IndexController extends Zend_Controller_Action
                 $albums = new Application_Model_DbTable_Albums();
                 $CategoryAlbum = new Application_Model_DbTable_AlbumCategory();
                 if (move_uploaded_file($tempname, $folder)) {
-                $albums->updateAlbum($id, $artist, $filename);
-                $CategoryAlbum->deleteAlbum($id);
-                foreach ($Category as $icon) {
-                    $Category = $icon;
-                    $CategoryAlbum->addAlbumCategory($id, $Category);
+                    $albums->updateAlbum($id, $artist, $filename);
+                    $CategoryAlbum->deleteAlbum($id);
+                    foreach ($Category as $icon) {
+                        $Category = $icon;
+                        $CategoryAlbum->addAlbumCategory($id, $Category);
+                    }
                 }
-            }
                 $this->_helper->redirector('index');
             }
         }
@@ -95,5 +90,27 @@ class IndexController extends Zend_Controller_Action
         }
 
         $this->_helper->json->sendjson(array('data' => $array));
+    }
+    public function editalbumAction()
+    {
+
+        $album = new Application_Model_DbTable_Albums();
+        $CategoryAlbum = new Application_Model_DbTable_AlbumCategory();
+        $id = $_REQUEST['id'];
+        $array = array();
+        foreach ($album->fetchAll("id =".$id)->toArray() as $row) {
+            $subdata = array();
+            $subdata["id"] = $row["id"];
+            $subdata["artist"] = $row["artist"];
+            $subdata["image"] = $row["image"];
+            $subdata1 = array();
+            foreach ($CategoryAlbum->fetchAll("IDAlbum =" . $row["id"])->toArray() as $row1) {
+                $subdata1[] = $row1["IDCategory"];
+                $subdata["IDCategory"] = implode(" ,", $subdata1);
+            }
+            $array[] = $subdata;
+        }
+
+        $this->_helper->json->sendjson($array);
     }
 }
