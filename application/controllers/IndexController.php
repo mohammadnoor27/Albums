@@ -106,7 +106,7 @@ class IndexController extends Zend_Controller_Action
             $subdata1 = array();
             foreach ($CategoryAlbum->fetchAll("IDAlbum =" . $row["id"])->toArray() as $row1) {
                 $subdata1[] = $row1["IDCategory"];
-                $subdata["IDCategory"] = implode(" ,", $subdata1);
+                $subdata["IDCategory"]=$subdata1;
             }
             $array[] = $subdata;
         }
