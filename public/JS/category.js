@@ -50,5 +50,20 @@ $(document).ready(function () {
   $('#formview').on('hidden.bs.modal', function () {
     location.reload();
   });
+  $('#addeditForm').validate({
+    rules: {
+      Categoryname: {
+        required: true
+      }
+    },
+    messages: {
+      Categoryname: {
+        required: 'Please enter Category.'
+      }
+    },
+    submitHandler: function(form) {
+      form.submit();
+    }
+  });
 
 });

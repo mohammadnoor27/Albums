@@ -49,5 +49,22 @@ $(document).ready(function () {
   $('#formview').on('hidden.bs.modal', function () {
     location.reload();
   });
+    
+    $('#addeditForm').validate({
+      rules: {
+        Artist: {
+          required: true
+        }
+      },
+      messages: {
+        Artist: {
+          required: 'Please enter Artist.'
+        }
+      },
+      submitHandler: function(form) {
+        form.submit();
+      }
+    });
+  
 
 });

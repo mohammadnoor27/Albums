@@ -69,5 +69,33 @@ $(document).ready(function () {
   $('#formview').on('hidden.bs.modal', function () {
     location.reload();
   });
+  $('#addeditForm').validate({
+    rules: {
+      Artist: {
+        required: true
+      },
+      Category: {
+        required: true
+      },
+      uploadfile: {
+        required: true
+      }
+    },
+    messages: {
+      Artist: {
+        required: 'Please enter Artist.'
+      },
+      Category: {
+        required: 'Please enter Category.'
+      },
+      uploadfile: {
+        required: 'Please enter file.'
+      }
+    },
+    submitHandler: function(form) {
+      form.submit();
+    }
+  });
+
 
 });
