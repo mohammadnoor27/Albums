@@ -98,7 +98,7 @@ class IndexController extends Zend_Controller_Action
         $CategoryAlbum = new Application_Model_DbTable_AlbumCategory();
         $id = $_REQUEST['id'];
         $array = array();
-        foreach ($album->fetchAll("id =".$id)->toArray() as $row) {
+        foreach ($album->fetchAll("id =" . $id)->toArray() as $row) {
             $subdata = array();
             $subdata["id"] = $row["id"];
             $subdata["artist"] = $row["artist"];
@@ -106,7 +106,7 @@ class IndexController extends Zend_Controller_Action
             $subdata1 = array();
             foreach ($CategoryAlbum->fetchAll("IDAlbum =" . $row["id"])->toArray() as $row1) {
                 $subdata1[] = $row1["IDCategory"];
-                $subdata["IDCategory"]=$subdata1;
+                $subdata["IDCategory"] = $subdata1;
             }
             $array[] = $subdata;
         }

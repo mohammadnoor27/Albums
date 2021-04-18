@@ -47,9 +47,6 @@ $(document).ready(function () {
     var EditButton = document.getElementById("Edit");
     EditButton.style.display = 'none';
   });
-  $('#formview').on('hidden.bs.modal', function () {
-    location.reload();
-  });
   $('#addeditForm').validate({
     rules: {
       Categoryname: {
@@ -61,9 +58,22 @@ $(document).ready(function () {
         required: 'Please enter Category.'
       }
     },
-    submitHandler: function(form) {
+    submitHandler: function (form) {
       form.submit();
     }
   });
+  $('#formview').on('hidden.bs.modal', function (e) {
+    var AddButton = document.getElementById("Add");
+    AddButton.style.display = 'inline-block';
+    var EditButton = document.getElementById("Edit");
+    EditButton.style.display = 'inline-block';
+    $(this)
+      .find("input[type=text],textarea,select")
+      .val('')
+      .end()
+      .find("input[type=checkbox], input[type=radio]")
+      .prop("checked", "")
+      .end();
+  })
 
 });

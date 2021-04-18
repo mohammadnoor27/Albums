@@ -40,13 +40,12 @@ $(document).ready(function () {
       url: '/index/editalbum',
       type: 'GET',
       data: 'id=' + per_id,
-      success: function(values)
-            {
-              console.log(values);
-                $('.artist').val(values[0].artist);
-                $('.category').val(values[0].IDCategory);
-              //  $('#img').val(values[0].image);
-            } 
+      success: function (values) {
+        console.log(values);
+        $('.artist').val(values[0].artist);
+        $('.category').val(values[0].IDCategory);
+        //  $('#img').val(values[0].image);
+      }
     });
   });
   $("body").on("click", "#Deletebutton", function () {
@@ -65,9 +64,6 @@ $(document).ready(function () {
 
     var EditButton = document.getElementById("Edit");
     EditButton.style.display = 'none';
-  });
-  $('#formview').on('hidden.bs.modal', function () {
-    location.reload();
   });
   $('#addeditForm').validate({
     rules: {
@@ -92,10 +88,22 @@ $(document).ready(function () {
         required: 'Please enter file.'
       }
     },
-    submitHandler: function(form) {
+    submitHandler: function (form) {
       form.submit();
     }
   });
-
+  $('#formview').on('hidden.bs.modal', function (e) {
+    var AddButton = document.getElementById("Add");
+    AddButton.style.display = 'inline-block';
+    var EditButton = document.getElementById("Edit");
+    EditButton.style.display = 'inline-block';
+    $(this)
+      .find("input[type=text],textarea,select")
+      .val('')
+      .end()
+      .find("input[type=checkbox], input[type=radio]")
+      .prop("checked", "")
+      .end();
+  })
 
 });
