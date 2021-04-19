@@ -41,6 +41,7 @@ $(document).ready(function () {
       type: 'GET',
       data: 'id=' + per_id,
       success: function (values) {
+        $('#id').val(values[0].id);
         $('.artist').val(values[0].artist);
         $('.category').val(values[0].IDCategory);
         //  $('#img').val(values[0].image);
