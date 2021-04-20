@@ -55,8 +55,6 @@ $(document).ready(function () {
       .attr('src', '')
       .end();
     $('#formview').modal('show');
-    var img = document.getElementById('#img');
-    img.style.display = "none";
   });
   $("body").on("click", "#Deletebutton", function () {
     var x = confirm("Are you sure you want to delete?");
