@@ -20,50 +20,58 @@ $(document).ready(function () {
       {
         data: "id",
         render: function (data, type, row) {
-          return '<button name="editbutton" id="editbutton" data-id="' + data + '" data-toggle="modal" data-target="#formview">Edit</button> <a href="/index/delete?id=' + data + '&del=delete"><button id="Deletebutton">Delete</button></a>';
+          return '<button name="editbutton" id="editbutton" data-id="' + data + '">Edit</button> <button id="Deletebutton" data-id="' + data + '">Delete</button>';
         }
       }
     ]
   });
 
-  var modal = document.getElementById('fromview');
-  window.onclick = function (event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  }
-
-  $('#co tbody').on('click', '#editbutton', function () {
+  $("body").on('click', '#editbutton', function () {
+    $("#formview")
+      .find("input[type=text],img,select")
+      .val('')
+      .end();
+    $('#formview').modal('show');
     var per_id = $(this).data('id');
-
     $.ajax({
       url: '/index/editalbum',
       type: 'GET',
       data: 'id=' + per_id,
       success: function (values) {
         $('#id').val(values[0].id);
+        $('#img').attr('src', '/image/' + values[0].image)
         $('.artist').val(values[0].artist);
         $('.category').val(values[0].IDCategory);
-        //  $('#img').val(values[0].image);
+        $('#image').val(values[0].image);
       }
     });
   });
+  $("body").on('click', '#AddButton', function () {
+    $("#formview")
+      .find("input[type=text],select")
+      .val('')
+      .end()
+      .find('img')
+      .attr('src', '')
+      .end();
+    $('#formview').modal('show');
+    var img = document.getElementById('#img');
+    img.style.display = "none";
+  });
   $("body").on("click", "#Deletebutton", function () {
     var x = confirm("Are you sure you want to delete?");
-    if (x)
-      return true;
+    if (x) {
+      var per_id = $(this).data('id');
+      $.ajax({
+        url: '/index/delete/id/' + per_id + '',
+        type: 'POST',
+        success: function () {
+          window.location.href = "index";
+        }
+      });
+    }
     else
       return false;
-  });
-  $("body").on("click", "#editbutton", function () {
-
-    var AddButton = document.getElementById("Add");
-    AddButton.style.display = 'none';
-  });
-  $("body").on("click", "#submitbutton", function () {
-
-    var EditButton = document.getElementById("Edit");
-    EditButton.style.display = 'none';
   });
   $('#addeditForm').validate({
     rules: {
@@ -71,9 +79,6 @@ $(document).ready(function () {
         required: true
       },
       Category: {
-        required: true
-      },
-      uploadfile: {
         required: true
       }
     },
@@ -83,27 +88,26 @@ $(document).ready(function () {
       },
       Category: {
         required: 'Please enter Category.'
-      },
-      uploadfile: {
-        required: 'Please enter file.'
       }
     },
     submitHandler: function (form) {
       form.submit();
     }
   });
-  $('#formview').on('hidden.bs.modal', function (e) {
-    var AddButton = document.getElementById("Add");
-    AddButton.style.display = 'inline-block';
-    var EditButton = document.getElementById("Edit");
-    EditButton.style.display = 'inline-block';
-    $(this)
-      .find("input[type=text],textarea,select")
-      .val('')
-      .end()
-      .find("input[type=checkbox], input[type=radio]")
-      .prop("checked", "")
-      .end();
-  })
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        $('#img').attr('src', e.target.result);
+      }
+
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  $("#file").change(function () {
+    readURL(this);
+  });
 
 });

@@ -15,14 +15,14 @@ class CategoryController extends Zend_Controller_Action
 
     public function submitAction()
     {
-        if (isset($_REQUEST['Add'])) {
+        if ($_REQUEST['id'] == NULL) {
             $category = $_REQUEST['Categoryname'];
             if ($category != "") {
                 $Category = new Application_Model_DbTable_Category();
                 $Category->addCategory($category);
                 $this->_helper->redirector('category');
             }
-        } elseif (isset($_REQUEST['Edit'])) {
+        } else {
             $id = $_REQUEST['id'];
             $category = $_REQUEST['Categoryname'];
             if ($category != "") {
@@ -36,12 +36,11 @@ class CategoryController extends Zend_Controller_Action
     public function deleteAction()
     {
 
-        if (isset($_REQUEST['del'])) {
-            $id = $_REQUEST['id'];
-            $Category = new Application_Model_DbTable_Category();
-            $Category->deleteCategory($id);
-            $this->_helper->redirector('category');
-        }
+
+        $id = $this->getRequest()->getParam('id');
+        $Category = new Application_Model_DbTable_Category();
+        $Category->deleteCategory($id);
+        $this->_helper->redirector('category');
     }
 
     public function getcategoryAction()

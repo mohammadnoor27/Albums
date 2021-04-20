@@ -19,7 +19,7 @@ class IndexController extends Zend_Controller_Action
 
     public function submitAction()
     {
-        if (isset($_REQUEST['Add'])) {
+        if ($_REQUEST['id'] == NULL) {
             $artist = $_REQUEST['Artist'];
             $Category = $_REQUEST['Category'];
             $filename = isset($_FILES['uploadfile']['name']) ? $_FILES["uploadfile"]["name"] : null;
@@ -37,7 +37,7 @@ class IndexController extends Zend_Controller_Action
                 }
                 $this->_helper->redirector('index');
             }
-        } elseif (isset($_REQUEST['Edit'])) {
+        } else {
             $id = $_REQUEST['id'];
             $artist = $_REQUEST['Artist'];
             $Category = $_REQUEST['Category'];
@@ -47,14 +47,19 @@ class IndexController extends Zend_Controller_Action
             if ($artist != "") {
                 $albums = new Application_Model_DbTable_Albums();
                 $CategoryAlbum = new Application_Model_DbTable_AlbumCategory();
-                if (move_uploaded_file($tempname, $folder)) {
-                    $albums->updateAlbum($id, $artist, $filename);
-                    $CategoryAlbum->deleteAlbum($id);
-                    foreach ($Category as $icon) {
-                        $Category = $icon;
-                        $CategoryAlbum->addAlbumCategory($id, $Category);
+                if ($filename != "") {
+                    if (move_uploaded_file($tempname, $folder)) {
                     }
+                } else {
+                    $filename = $_REQUEST["image"];
                 }
+                $albums->updateAlbum($id, $artist, $filename);
+                $CategoryAlbum->deleteAlbum($id);
+                foreach ($Category as $icon) {
+                    $Category = $icon;
+                    $CategoryAlbum->addAlbumCategory($id, $Category);
+                }
+
                 $this->_helper->redirector('index');
             }
         }
@@ -63,12 +68,11 @@ class IndexController extends Zend_Controller_Action
     public function deleteAction()
     {
 
-        if (isset($_REQUEST['del'])) {
-            $id = $_REQUEST['id'];
-            $albums = new Application_Model_DbTable_Albums();
-            $albums->deleteAlbum($id);
-            $this->_helper->redirector('index');
-        }
+
+        $id = $this->getRequest()->getParam('id');
+        $albums = new Application_Model_DbTable_Albums();
+        $albums->deleteAlbum($id);
+        $this->_helper->redirector('index');
     }
 
     public function albumAction()

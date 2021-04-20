@@ -15,14 +15,14 @@ class ArtistController extends Zend_Controller_Action
 
     public function submitAction()
     {
-        if (isset($_REQUEST['Add'])) {
+        if ($_REQUEST['id'] == NULL) {
             $artists = $_REQUEST['Artist'];
             if ($artists != "") {
                 $artist = new Application_Model_DbTable_Artist();
                 $artist->addArtist($artists);
                 $this->_helper->redirector('artist');
             }
-        } elseif (isset($_REQUEST['Edit'])) {
+        } else {
             $id = $_REQUEST['id'];
             $artists = $_REQUEST['Artist'];
             if ($artists != "") {
@@ -36,12 +36,10 @@ class ArtistController extends Zend_Controller_Action
     public function deleteAction()
     {
 
-        if (isset($_REQUEST['del'])) {
-            $id = $_REQUEST['id'];
-            $artist = new Application_Model_DbTable_Artist();
-            $artist->deleteArtist($id);
-            $this->_helper->redirector('artist');
-        }
+        $id = $this->getRequest()->getParam('id');
+        $artist = new Application_Model_DbTable_Artist();
+        $artist->deleteArtist($id);
+        $this->_helper->redirector('artist');
     }
 
     public function getartistAction()

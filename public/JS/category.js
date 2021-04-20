@@ -13,40 +13,37 @@ $(document).ready(function () {
       {
         data: "ID",
         render: function (data, type, row) {
-          return '<button id="editbutton" data-id="' + data + '" data-toggle="modal" data-target="#formview">Edit</button> <a href="/category/delete?id=' + data + '&del=delete"><button id="Deletebutton">Delete</button></a>';
+          return '<button id="editbutton" data-id="' + data + '" >Edit</button> <button id="Deletebutton" data-id="' + data + '">Delete</button>';
         }
       }
     ]
   });
   $("body").on("click", "#Deletebutton", function () {
     var x = confirm("Are you sure you want to delete?");
-    if (x)
-      return true;
+    if (x) {
+      var per_id = $(this).data('id');
+      $.ajax({
+        url: '/category/delete/id/' + per_id + '',
+        type: 'POST',
+        success: function () {
+          window.location.href = "category";
+        }
+      });
+    }
     else
       return false;
   });
-  $('#co tbody').on('click', '#editbutton', function () {
+  $("body").on('click', '#editbutton', function () {
+    $("#formview")
+      .find("input[type=text],img,select")
+      .val('')
+      .end();
+    $('#formview').modal('show');
     var jsData = table.row($(this).parents('tr')).data();
     $('#category').val(jsData["Category_Name"]);
     $('#id').val(jsData["ID"]);
   });
 
-  var modal = document.getElementById('fromview');
-  window.onclick = function (event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  }
-  $("body").on("click", "#editbutton", function () {
-
-    var AddButton = document.getElementById("Add");
-    AddButton.style.display = 'none';
-  });
-  $("body").on("click", "#submitbutton", function () {
-
-    var EditButton = document.getElementById("Edit");
-    EditButton.style.display = 'none';
-  });
   $('#addeditForm').validate({
     rules: {
       Categoryname: {
@@ -62,18 +59,12 @@ $(document).ready(function () {
       form.submit();
     }
   });
-  $('#formview').on('hidden.bs.modal', function (e) {
-    var AddButton = document.getElementById("Add");
-    AddButton.style.display = 'inline-block';
-    var EditButton = document.getElementById("Edit");
-    EditButton.style.display = 'inline-block';
-    $(this)
-      .find("input[type=text],textarea,select")
+  $("body").on('click', '#AddButton', function () {
+    $("#formview")
+      .find("input[type=text],select")
       .val('')
-      .end()
-      .find("input[type=checkbox], input[type=radio]")
-      .prop("checked", "")
       .end();
-  })
+    $('#formview').modal('show');
+  });
 
 });
