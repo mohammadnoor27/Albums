@@ -26,7 +26,7 @@ $(document).ready(function () {
         url: '/artist/delete/id/' + per_id + '',
         type: 'POST',
         success: function () {
-          window.location.href = "artist";
+          table.ajax.reload();
         }
       });
     }
@@ -35,7 +35,7 @@ $(document).ready(function () {
   });
   $("body").on('click', '#editbutton', function () {
     $("#formview")
-      .find("input[type=text],img,select")
+      .find("input[type=text],select")
       .val('')
       .end();
     $('#formview').modal('show');
@@ -61,7 +61,7 @@ $(document).ready(function () {
   });
   $("body").on('click', '#AddButton', function () {
     $("#formview")
-      .find("input[type=text],select")
+      .find("input[type=text],input[type=hidden],select")
       .val('')
       .end();
     $('#formview').modal('show');

@@ -48,7 +48,7 @@ $(document).ready(function () {
   });
   $("body").on('click', '#AddButton', function () {
     $("#formview")
-      .find("input[type=text],select")
+      .find("input[type=text],input[type=hidden],select")
       .val('')
       .end()
       .find('img')
@@ -64,7 +64,7 @@ $(document).ready(function () {
         url: '/index/delete/id/' + per_id + '',
         type: 'POST',
         success: function () {
-          window.location.href = "index";
+          table.ajax.reload();
         }
       });
     }
@@ -107,5 +107,12 @@ $(document).ready(function () {
   $("#file").change(function () {
     readURL(this);
   });
+  $(".js-example-placeholder-single").select2({
+    placeholder: "Select a Name",
+    allowClear: true
+});
+$(".js-example-placeholder-multiple").select2({
+  placeholder: "Select a Category"
+});
 
 });

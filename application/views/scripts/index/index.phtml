@@ -30,7 +30,7 @@ $this->headTitle($this->title);
                                                 <input type="file" name="uploadfile" id="file" value="nn" />
                                         </div>
                                         <label for="Name"><b>Artist</b></label>
-                                        <select name="Artist" class="form-control artist" onselect="this.value;" required>
+                                        <select name="Artist" class="js-example-placeholder-single js-states form-control artist" onselect="this.value;" style="width: 100%;" required>
                                                 <option value="" disabled selected>Choose option</option>
                                                 <?php
                                                 foreach ($this->artist as $artist) {
@@ -42,8 +42,7 @@ $this->headTitle($this->title);
                                 </div>
                                 <div class="form-group">
                                         <label for="Category"><b>Category</b></label>
-                                        <select name="Category[]" class="form-control category" onselect="this.value;" multiple required>
-                                                <option value="" disabled selected>Choose option</option>
+                                        <select name="Category[]" class="js-example-placeholder-multiple js-states form-control category" onselect="this.value;" style="width: 100%;" multiple required>
                                                 <?php
                                                 foreach ($this->category as $category) {
 
