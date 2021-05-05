@@ -2,7 +2,7 @@
 $this->title = "My Albums";
 $this->headTitle($this->title);
 ?>
-<p><button id="AddButton"> Add New Album </button></p>
+<p><button id="AddButton" data-id=""> Add New Album </button></p>
 <table id="co" class="table" style="width:100%">
         <thead class="thead-dark">
 
@@ -15,7 +15,7 @@ $this->headTitle($this->title);
 </table>
 <div class="modal" id="formview">
         <div id="contentmodel">
-                <form class="animate" id="addeditForm" method="POST" action="/index/submit" enctype="multipart/form-data">
+                <form class="animate" id="addeditForm" method="POST">
                         <div class="container">
                                 <h1>Album</h1>
                                 </br>
@@ -25,10 +25,15 @@ $this->headTitle($this->title);
                                         <img id="img" style="height: 160px; width: 160px;">
 
                                         </br>
-                                        <div class="form-group">
-                                                <label for="Photo"><b>Your Photo</b></label>
-                                                <input type="file" name="uploadfile" id="file" value="nn" />
+                                        <div id="filelist">Your browser doesn't have Flash, Silverlight or HTML5 support.</div>
+                                        <br />
+
+                                        <div id="container">
+                                                <button id="browse" href="javascript:;">[Browse...]</button>
+                                                <a id="start-upload" href="javascript:;">[Start Upload]</a>
                                         </div>
+                                        <br />
+                                        <pre id="console"></pre>
                                         <label for="Name"><b>Artist</b></label>
                                         <select name="Artist" class="js-example-placeholder-single js-states form-control artist" onselect="this.value;" style="width: 100%;" required>
                                                 <option value="" disabled selected>Choose option</option>
@@ -51,10 +56,13 @@ $this->headTitle($this->title);
                                                 <?php } ?>
                                         </select>
                                 </div>
-                                <input type="submit" name="Save" class="btn btn-primary" id="Save" value="Save">
-                                <input type="button" name="Cancel" data-dismiss="modal" data-target="#formview" class="btn btn-primary" id="Cancel" value="Cancel" style="display:inline-block;">
+                                <button name="Save" class="btn btn-primary" id="Save">Save</button>
+                                <button name="Cancel" data-dismiss="modal" data-target="#formview" class="btn btn-primary" id="Cancel" style="display:inline-block;">Cancel</button>
                         </div>
                 </form>
         </div>
 </div>
+<?php echo $this->headScript()->appendFile($this->baseUrl() . '/JS/pluploadjs/plupload.full.min.js'); ?>
+<?php echo $this->headScript()->appendFile($this->baseUrl() . '/JS/pluploadjs/moxie.js'); ?>
+<?php echo $this->headScript()->appendFile($this->baseUrl() . '/JS/pluploadjs/jquery.plupload.queue/jquery.plupload.queue.min.js'); ?>
 <?php echo $this->headScript()->appendFile($this->baseUrl() . '/JS/index.js'); ?>

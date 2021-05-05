@@ -25,13 +25,13 @@ $(document).ready(function () {
       $.ajax({
         url: '/category/delete/id/' + per_id + '',
         type: 'POST',
-        success: function () {
+        dataType: "json",
+        success: function (msg) {
+          alert(msg.Delete);
           table.ajax.reload();
         }
       });
     }
-    else
-      return false;
   });
   $("body").on('click', '#editbutton', function () {
     $("#formview")
@@ -39,9 +39,16 @@ $(document).ready(function () {
       .val('')
       .end();
     $('#formview').modal('show');
-    var jsData = table.row($(this).parents('tr')).data();
-    $('#category').val(jsData["Category_Name"]);
-    $('#id').val(jsData["ID"]);
+    var per_id = $(this).data('id');
+    $.ajax({
+      url: '/category/editcategory',
+      type: 'GET',
+      data: 'id=' + per_id,
+      success: function (values) {
+        $('#id').val(values.ID);
+        $('#category').val(values.Category_Name);
+      }
+    });
   });
 
   $('#addeditForm').validate({
@@ -66,5 +73,27 @@ $(document).ready(function () {
       .end();
     $('#formview').modal('show');
   });
-
+  $("body").on("click", "#Save", function () {
+    var id = $('#id').val();
+    var category = $('#category').val();
+    $.ajax({
+      url: '/category/submit',
+      type: 'POST',
+      data: {
+        id:id,
+        Categoryname:category
+      },
+      dataType: "json",
+      success: function (msg) {
+        if (id == "") {
+          alert(msg.Add);
+          table.ajax.reload();
+        }
+        else {
+          alert(msg.Edit);
+          table.ajax.reload();
+        }
+      }
+    });
+  });
 });

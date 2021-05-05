@@ -19,60 +19,53 @@ class IndexController extends Zend_Controller_Action
 
     public function submitAction()
     {
-        if ($_REQUEST['id'] == NULL) {
-            $artist = $_REQUEST['Artist'];
-            $Category = $_REQUEST['Category'];
-            $filename = isset($_FILES['uploadfile']['name']) ? $_FILES["uploadfile"]["name"] : null;
-            $tempname = isset($_FILES['uploadfile']['tmp_name']) ? $_FILES["uploadfile"]["tmp_name"] : null;
-            $folder = "/var/www/zf-tutorial/public/image/" . $filename;
+        // die(var_dump($_POST['uploadfile']));
+        if ($_POST['id'] == NULL) {
+            $artist = $_POST['Artist'];
+            $Category = $_POST['Category'];
+            $image = $_POST['image'];
             if ($artist != "") {
                 $albums = new Application_Model_DbTable_Albums();
                 $CategoryAlbum = new Application_Model_DbTable_AlbumCategory();
-                if (move_uploaded_file($tempname, $folder)) {
-                    $ID = $albums->addAlbum($artist, $filename);
-                    foreach ($Category as $icon) {
-                        $Category = $icon;
-                        $CategoryAlbum->addAlbumCategory($ID, $Category);
-                    }
+                $ID = $albums->addAlbum($artist, $image);
+                foreach ($Category as $icon) {
+                    $Category = $icon;
+                    $CategoryAlbum->addAlbumCategory($ID, $Category);
                 }
-                $this->_helper->redirector('index');
             }
+            $msg = array();
+            $msg['Add'] = "Album Added Successfull";
+            $this->_helper->json->sendjson($msg);
+            
         } else {
-            $id = $_REQUEST['id'];
-            $artist = $_REQUEST['Artist'];
-            $Category = $_REQUEST['Category'];
-            $filename = isset($_FILES['uploadfile']['name']) ? $_FILES["uploadfile"]["name"] : null;
-            $tempname = isset($_FILES['uploadfile']['tmp_name']) ? $_FILES["uploadfile"]["tmp_name"] : null;
-            $folder = "/var/www/zf-tutorial/public/image/" . $filename;
+            $id = $_POST['id'];
+            $artist = $_POST['Artist'];
+            $Category = $_POST['Category'];
             if ($artist != "") {
                 $albums = new Application_Model_DbTable_Albums();
                 $CategoryAlbum = new Application_Model_DbTable_AlbumCategory();
-                if ($filename != "") {
-                    if (move_uploaded_file($tempname, $folder)) {
-                    }
-                } else {
-                    $filename = $_REQUEST["image"];
-                }
+                $filename = $_POST['image'];
                 $albums->updateAlbum($id, $artist, $filename);
                 $CategoryAlbum->deleteAlbum($id);
                 foreach ($Category as $icon) {
                     $Category = $icon;
                     $CategoryAlbum->addAlbumCategory($id, $Category);
                 }
-
-                $this->_helper->redirector('index');
             }
+            $msg = array();
+            $msg['Edit'] = "Album Edited Successfull";
+            $this->_helper->json->sendjson($msg);
         }
     }
 
     public function deleteAction()
     {
-
-
         $id = $this->getRequest()->getParam('id');
         $albums = new Application_Model_DbTable_Albums();
         $albums->deleteAlbum($id);
-        $this->_helper->redirector('index');
+        $msg = array();
+        $msg['Delete'] = "Album Deleted Successfull";
+        $this->_helper->json->sendjson($msg);
     }
 
     public function albumAction()
@@ -80,17 +73,14 @@ class IndexController extends Zend_Controller_Action
         $album = new Application_Model_DbTable_AlbumView();
         $CategoryAlbum = new Application_Model_DbTable_AlbumCategoryView();
         $array = array();
-        foreach ($album->fetchAll()->toArray() as $row) {
-            $subdata = array();
-            $subdata["id"] = $row["id"];
-            $subdata["Artist_Name"] = $row["Artist_Name"];
-            $subdata["image"] = $row["image"];
-            $subdata1 = array();
-            foreach ($CategoryAlbum->fetchAll("IDAlbum =" . $row["id"])->toArray() as $row1) {
-                $subdata1[] = $row1["Category_Name"];
-                $subdata["Category_Name"] = implode(" ,", $subdata1);
+        foreach ($album->fetchAll()->toArray() as $rowAlbum) {
+            $Album = $rowAlbum;
+            $Category = array();
+            foreach ($CategoryAlbum->fetchAll("IDAlbum =" . $rowAlbum["id"])->toArray() as $rowCategory) {
+                $Category[] = $rowCategory["Category_Name"];
             }
-            $array[] = $subdata;
+            $Album["Category_Name"] = implode(" ,", $Category);
+            $array[] = $Album;
         }
 
         $this->_helper->json->sendjson(array('data' => $array));
@@ -101,20 +91,24 @@ class IndexController extends Zend_Controller_Action
         $album = new Application_Model_DbTable_Albums();
         $CategoryAlbum = new Application_Model_DbTable_AlbumCategory();
         $id = $_REQUEST['id'];
-        $array = array();
-        foreach ($album->fetchAll("id =" . $id)->toArray() as $row) {
-            $subdata = array();
-            $subdata["id"] = $row["id"];
-            $subdata["artist"] = $row["artist"];
-            $subdata["image"] = $row["image"];
-            $subdata1 = array();
-            foreach ($CategoryAlbum->fetchAll("IDAlbum =" . $row["id"])->toArray() as $row1) {
-                $subdata1[] = $row1["IDCategory"];
-                $subdata["IDCategory"] = $subdata1;
-            }
-            $array[] = $subdata;
+        $Album = $album->fetchRow("id =" . $id)->toArray();
+        $Category = array();
+        foreach ($CategoryAlbum->fetchAll("IDAlbum =" . $Album["id"])->toArray() as $rowCategory) {
+            $Category[] = $rowCategory["IDCategory"];
+            $Album["IDCategory"] = $Category;
+        }
+        $this->_helper->json->sendjson($Album);
+    }
+    public function uploadalbumAction()
+    {
+        if (empty($_FILES) || $_FILES["file"]["error"]) {
+            die('{"OK": 0}');
         }
 
-        $this->_helper->json->sendjson($array);
+        $fileName = $_FILES["file"]["name"];
+        move_uploaded_file($_FILES["file"]["tmp_name"], "/var/www/zf-tutorial/public/image/$fileName");
+
+        die('{"OK": 1}');
+        $this->_helper->redirector('index');
     }
 }

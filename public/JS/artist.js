@@ -25,13 +25,13 @@ $(document).ready(function () {
       $.ajax({
         url: '/artist/delete/id/' + per_id + '',
         type: 'POST',
-        success: function () {
+        dataType: "json",
+        success: function (msg) {
+          alert(msg.Delete);
           table.ajax.reload();
         }
       });
     }
-    else
-      return false;
   });
   $("body").on('click', '#editbutton', function () {
     $("#formview")
@@ -39,9 +39,16 @@ $(document).ready(function () {
       .val('')
       .end();
     $('#formview').modal('show');
-    var jsData = table.row($(this).parents('tr')).data();
-    $('#artist').val(jsData["Artist_Name"]);
-    $('#id').val(jsData["ID"]);
+    var per_id = $(this).data('id');
+    $.ajax({
+      url: '/artist/editartist',
+      type: 'GET',
+      data: 'id=' + per_id,
+      success: function (values) {
+        $('#id').val(values.ID);
+        $('#artist').val(values.Artist_Name);
+      }
+    });
   });
 
   $('#addeditForm').validate({
@@ -65,5 +72,28 @@ $(document).ready(function () {
       .val('')
       .end();
     $('#formview').modal('show');
+  });
+  $("body").on("click", "#Save", function () {
+    var id = $('#id').val();
+    var artist = $('#artist').val();
+    $.ajax({
+      url: '/artist/submit',
+      type: 'POST',
+      data: {
+        id:id,
+        Artist:artist
+      },
+      dataType: "json",
+      success: function (msg) {
+        if (id == "") {
+          alert(msg.Add);
+          table.ajax.reload();
+        }
+        else {
+          alert(msg.Edit);
+          table.ajax.reload();
+        }
+      }
+    });
   });
 });

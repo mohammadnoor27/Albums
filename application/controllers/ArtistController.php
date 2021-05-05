@@ -15,21 +15,25 @@ class ArtistController extends Zend_Controller_Action
 
     public function submitAction()
     {
-        if ($_REQUEST['id'] == NULL) {
-            $artists = $_REQUEST['Artist'];
+        if ($_POST['id'] == NULL) {
+            $artists = $_POST['Artist'];
             if ($artists != "") {
                 $artist = new Application_Model_DbTable_Artist();
                 $artist->addArtist($artists);
-                $this->_helper->redirector('artist');
             }
+            $msg = array();
+            $msg['Add'] = "Artist Added Successfull";
+            $this->_helper->json->sendjson($msg);
         } else {
-            $id = $_REQUEST['id'];
-            $artists = $_REQUEST['Artist'];
+            $id = $_POST['id'];
+            $artists = $_POST['Artist'];
             if ($artists != "") {
                 $artist = new Application_Model_DbTable_Artist();
                 $artist->updateArtist($id, $artists);
-                $this->_helper->redirector('artist');
             }
+            $msg = array();
+            $msg['Edit'] = "Artist Edited Successfull";
+            $this->_helper->json->sendjson($msg);
         }
     }
 
@@ -39,7 +43,9 @@ class ArtistController extends Zend_Controller_Action
         $id = $this->getRequest()->getParam('id');
         $artist = new Application_Model_DbTable_Artist();
         $artist->deleteArtist($id);
-        $this->_helper->redirector('artist');
+        $msg = array();
+        $msg['Delete'] = "Artist Deleted Successfull";
+        $this->_helper->json->sendjson($msg);
     }
 
     public function getartistAction()
@@ -47,5 +53,11 @@ class ArtistController extends Zend_Controller_Action
         $artist = new Application_Model_DbTable_Artist();
         $data = $artist->fetchAll();
         $this->_helper->json->sendjson(array('data' => $data->toArray()));
+    }
+    public function editartistAction()
+    {
+        $Artist = new Application_Model_DbTable_Artist();
+        $id = $_REQUEST['id'];
+        $this->_helper->json->sendjson($Artist->fetchRow("ID = " . $id)->toArray());
     }
 }
