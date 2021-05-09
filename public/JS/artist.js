@@ -64,6 +64,7 @@ $(document).ready(function () {
     },
     submitHandler: function (form) {
       form.submit();
+      $('#formview').modal('hide');
     }
   });
   $("body").on('click', '#AddButton', function () {
@@ -74,26 +75,18 @@ $(document).ready(function () {
     $('#formview').modal('show');
   });
   $("body").on("click", "#Save", function () {
-    var id = $('#id').val();
     var artist = $('#artist').val();
+    if(artist!=""){
     $.ajax({
       url: '/artist/submit',
-      type: 'POST',
-      data: {
-        id:id,
-        Artist:artist
-      },
+      type: 'GET',
+      data: $("#addeditForm").serialize(),
       dataType: "json",
-      success: function (msg) {
-        if (id == "") {
-          alert(msg.Add);
+      success: function (msgs) {
+          alert(msgs.msg);
           table.ajax.reload();
-        }
-        else {
-          alert(msg.Edit);
-          table.ajax.reload();
-        }
       }
     });
+  }
   });
 });

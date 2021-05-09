@@ -72,6 +72,20 @@ $(document).ready(function () {
       });
     }
   });
+  function readURL(input) {
+      var reader = new FileReader();
+      
+      reader.onload = function(e) {
+        $('#img').attr('src', e.target.result);
+      }
+      
+      reader.readAsDataURL(input.getSource()); // convert to base64 string
+    
+  }
+  
+  $("#browse").change(function() {
+    readURL(this);
+  });
   $('#addeditForm').validate({
     rules: {
       Artist: {
@@ -93,20 +107,6 @@ $(document).ready(function () {
       form.submit();
     }
   });
-  // function readURL(input) {
-  //   console.log(input);
-  //   if (input.files && input.files[0]) {
-  //     var reader = new FileReader();
-
-  //     reader.onload = function (e) {
-  //       $('#img').attr('src', e.target.result);
-  //     }
-
-  //     reader.readAsDataURL(input.files[0]);
-  //   }
-  // }
-
-
   $(".js-example-placeholder-single").select2({
     placeholder: "Select a Name",
     allowClear: true
@@ -125,7 +125,7 @@ $(document).ready(function () {
     filters: {
       max_file_size: '10mb',
       mime_types: [
-        { title: "Image files", extensions: "jpg,gif,png" },
+        { title: "Image files", extensions: "jpg,gif,png,jpeg" },
         { title: "Zip files", extensions: "zip" }
       ]
     },
@@ -141,8 +141,9 @@ $(document).ready(function () {
       PostInit: function () {
         document.getElementById('filelist').innerHTML = '';
 
-        document.getElementById('start-upload').onclick = function () {
+        document.getElementById('Save').onclick = function () {
           uploader.start();
+          $('#formview').modal('hide');
           return false;
         };
       },
@@ -152,16 +153,13 @@ $(document).ready(function () {
         plupload.each(files, function (file) {
           document.getElementById('filelist').innerHTML += '<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></div>';
           $('#image').val(file.name);
-          // $("#browse").change(function () {
-          //   readURL(file);
-          // });
-
+          readURL(file.getSource());
         });
       },
 
       UploadProgress: function (up, file) {
         document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span>' + file.percent + "%</span>";
-        $('#img').attr('src', '/image/' + file.name);
+
       },
 
       Error: function (up, err) {
@@ -173,30 +171,20 @@ $(document).ready(function () {
   uploader.init();
 
   $("body").on("click", "#Save", function () {
-    var id = $('#id').val();
     var Artist = $(".artist").val();
     var category = $('.category').val();
     var img = $('#image').val();
-    $.ajax({
-      url: '/index/submit',
-      type: 'POST',
-      data: {
-        id: id,
-        Artist: Artist,
-        Category: category,
-        image: img
-      },
-      dataType: "json",
-      success: function (msg) {
-        if (id == "") {
-          alert(msg.Add);
+    if (Artist != "" && img != "" && category != "") {
+      $.ajax({
+        url: '/index/submit',
+        type: 'GET',
+        data: $("#addeditForm").serialize(),
+        dataType: "json",
+        success: function (msgs) {
+          alert(msgs.msg);
           table.ajax.reload();
         }
-        else {
-          alert(msg.Edit);
-          table.ajax.reload();
-        }
-      }
-    });
+      });
+    }
   });
 });

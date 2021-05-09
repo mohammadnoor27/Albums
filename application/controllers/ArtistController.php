@@ -3,37 +3,33 @@
 class ArtistController extends Zend_Controller_Action
 {
 
-    public function init()
-    {
-    }
-
     public function artistAction()
     {
-        $artist = new Application_Model_DbTable_Artist();
-        $this->view->artist = $artist->fetchAll();
     }
 
     public function submitAction()
     {
-        if ($_POST['id'] == NULL) {
-            $artists = $_POST['Artist'];
+        $this->_helper->viewRenderer->setNoRender(true);
+        $this->_helper->layout->disableLayout();
+        if ($this->getRequest()->getParam('id') == NULL) {
+            $artists = $this->getRequest()->getParam('Artist');
             if ($artists != "") {
                 $artist = new Application_Model_DbTable_Artist();
                 $artist->addArtist($artists);
+                $msg = array();
+                $msg['msg'] = "Artist Added Successfull";
+                $this->_helper->json->sendjson($msg);
             }
-            $msg = array();
-            $msg['Add'] = "Artist Added Successfull";
-            $this->_helper->json->sendjson($msg);
         } else {
-            $id = $_POST['id'];
-            $artists = $_POST['Artist'];
+            $id = $this->getRequest()->getParam('id');
+            $artists = $this->getRequest()->getParam('Artist');
             if ($artists != "") {
                 $artist = new Application_Model_DbTable_Artist();
                 $artist->updateArtist($id, $artists);
+                $msg = array();
+                $msg['msg'] = "Artist Edited Successfull";
+                $this->_helper->json->sendjson($msg);
             }
-            $msg = array();
-            $msg['Edit'] = "Artist Edited Successfull";
-            $this->_helper->json->sendjson($msg);
         }
     }
 
@@ -43,8 +39,9 @@ class ArtistController extends Zend_Controller_Action
         $id = $this->getRequest()->getParam('id');
         $artist = new Application_Model_DbTable_Artist();
         $artist->deleteArtist($id);
-        $msg = array();
-        $msg['Delete'] = "Artist Deleted Successfull";
+        $msg = array(
+            'Delete' => 'Artist Deleted Successfull'
+        );
         $this->_helper->json->sendjson($msg);
     }
 
@@ -57,7 +54,7 @@ class ArtistController extends Zend_Controller_Action
     public function editartistAction()
     {
         $Artist = new Application_Model_DbTable_Artist();
-        $id = $_REQUEST['id'];
+        $id = $this->getRequest()->getParam('id');
         $this->_helper->json->sendjson($Artist->fetchRow("ID = " . $id)->toArray());
     }
 }

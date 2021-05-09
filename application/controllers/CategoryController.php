@@ -3,37 +3,31 @@
 class CategoryController extends Zend_Controller_Action
 {
 
-    public function init()
-    {
-    }
-
     public function categoryAction()
     {
-        $category = new Application_Model_DbTable_Category();
-        $this->view->category = $category->fetchAll();
     }
 
     public function submitAction()
     {
-        if ($_POST['id'] == NULL) {
-            $category = $_POST['Categoryname'];
+        if ($this->getRequest()->getParam('id') == NULL) {
+            $category = $this->getRequest()->getParam('Categoryname');
             if ($category != "") {
                 $Category = new Application_Model_DbTable_Category();
                 $Category->addCategory($category);
+                $msg = array();
+                $msg['msg'] = "Category Added Successfull";
+                $this->_helper->json->sendjson($msg);
             }
-            $msg = array();
-            $msg['Add'] = "Category Added Successfull";
-            $this->_helper->json->sendjson($msg);
         } else {
-            $id = $_POST['id'];
-            $category = $_POST['Categoryname'];
+            $id = $this->getRequest()->getParam('id');
+            $category = $this->getRequest()->getParam('Categoryname');
             if ($category != "") {
                 $Category = new Application_Model_DbTable_Category();
                 $Category->updateCategory($id, $category);
+                $msg = array();
+                $msg['msg'] = "Category Edited Successfull";
+                $this->_helper->json->sendjson($msg);
             }
-            $msg = array();
-            $msg['Edit'] = "Category Edited Successfull";
-            $this->_helper->json->sendjson($msg);
         }
     }
 
@@ -58,7 +52,7 @@ class CategoryController extends Zend_Controller_Action
     public function editcategoryAction()
     {
         $Category = new Application_Model_DbTable_Category();
-        $id = $_REQUEST['id'];
+        $id = $this->getRequest()->getParam('id');
         $this->_helper->json->sendjson($Category->fetchRow("ID = " . $id)->toArray());
     }
 }

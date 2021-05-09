@@ -3,10 +3,6 @@
 class IndexController extends Zend_Controller_Action
 {
 
-    public function init()
-    {
-    }
-
     public function indexAction()
     {
         $albums = new Application_Model_DbTable_Albums();
@@ -19,11 +15,10 @@ class IndexController extends Zend_Controller_Action
 
     public function submitAction()
     {
-        // die(var_dump($_POST['uploadfile']));
-        if ($_POST['id'] == NULL) {
-            $artist = $_POST['Artist'];
-            $Category = $_POST['Category'];
-            $image = $_POST['image'];
+        if ($this->getRequest()->getParam('id') == NULL) {
+            $artist = $this->getRequest()->getParam('Artist');
+            $Category = $this->getRequest()->getParam('Category');
+            $image = $this->getRequest()->getParam('image');
             if ($artist != "") {
                 $albums = new Application_Model_DbTable_Albums();
                 $CategoryAlbum = new Application_Model_DbTable_AlbumCategory();
@@ -32,29 +27,28 @@ class IndexController extends Zend_Controller_Action
                     $Category = $icon;
                     $CategoryAlbum->addAlbumCategory($ID, $Category);
                 }
+                $msg = array();
+                $msg['msg'] = "Album Added Successfull";
+                $this->_helper->json->sendjson($msg);
             }
-            $msg = array();
-            $msg['Add'] = "Album Added Successfull";
-            $this->_helper->json->sendjson($msg);
-            
         } else {
-            $id = $_POST['id'];
-            $artist = $_POST['Artist'];
-            $Category = $_POST['Category'];
+            $id = $this->getRequest()->getParam('id');
+            $artist = $this->getRequest()->getParam('Artist');
+            $Category = $this->getRequest()->getParam('Category');
             if ($artist != "") {
                 $albums = new Application_Model_DbTable_Albums();
                 $CategoryAlbum = new Application_Model_DbTable_AlbumCategory();
-                $filename = $_POST['image'];
+                $filename = $this->getRequest()->getParam('image');
                 $albums->updateAlbum($id, $artist, $filename);
                 $CategoryAlbum->deleteAlbum($id);
                 foreach ($Category as $icon) {
                     $Category = $icon;
                     $CategoryAlbum->addAlbumCategory($id, $Category);
                 }
+                $msg = array();
+                $msg['msg'] = "Album Edited Successfull";
+                $this->_helper->json->sendjson($msg);
             }
-            $msg = array();
-            $msg['Edit'] = "Album Edited Successfull";
-            $this->_helper->json->sendjson($msg);
         }
     }
 
@@ -90,7 +84,7 @@ class IndexController extends Zend_Controller_Action
 
         $album = new Application_Model_DbTable_Albums();
         $CategoryAlbum = new Application_Model_DbTable_AlbumCategory();
-        $id = $_REQUEST['id'];
+        $id = $this->getRequest()->getParam('id');
         $Album = $album->fetchRow("id =" . $id)->toArray();
         $Category = array();
         foreach ($CategoryAlbum->fetchAll("IDAlbum =" . $Album["id"])->toArray() as $rowCategory) {

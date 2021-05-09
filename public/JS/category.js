@@ -74,26 +74,19 @@ $(document).ready(function () {
     $('#formview').modal('show');
   });
   $("body").on("click", "#Save", function () {
-    var id = $('#id').val();
     var category = $('#category').val();
-    $.ajax({
-      url: '/category/submit',
-      type: 'POST',
-      data: {
-        id:id,
-        Categoryname:category
-      },
-      dataType: "json",
-      success: function (msg) {
-        if (id == "") {
-          alert(msg.Add);
+    if (category != "") {
+      $.ajax({
+        url: '/category/submit',
+        type: 'POST',
+        data: $("#addeditForm").serialize(),
+        dataType: "json",
+        success: function (msgs) {
+          $('#formview').modal('hide');
+          alert(msgs.msg);
           table.ajax.reload();
         }
-        else {
-          alert(msg.Edit);
-          table.ajax.reload();
-        }
-      }
-    });
+      });
+    }
   });
 });
